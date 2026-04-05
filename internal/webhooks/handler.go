@@ -8,7 +8,6 @@ import (
 	"api-go/internal/config"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"
 )
@@ -16,14 +15,14 @@ import (
 type Handler struct {
 	service  *Service
 	cfg      *config.Config
-	validate *validator.Validate
+	validate *common.Validator
 }
 
 func NewHandler(cfg *config.Config, service *Service) *Handler {
 	return &Handler{
 		service:  service,
 		cfg:      cfg,
-		validate: validator.New(),
+		validate: common.NewValidator(),
 	}
 }
 
@@ -79,6 +78,18 @@ func (h *Handler) Notifications(c *gin.Context) {
 	channelID := c.GetHeader("X-Goog-Channel-Id")
 	resourceState := c.GetHeader("X-Goog-Resource-State")
 	resourceID := c.GetHeader("X-Goog-Resource-Id")
+
+	if channelID == "" {
+		c.JSON(http.StatusBadRequest, common.BadRequestError("missing X-Goog-Channel-Id header"))
+		return
+	}
+
+	// Reject notifications for channels we didn't create
+	if !h.service.HasChannel(channelID) {
+		slog.Warn("webhook notification from unknown channel", "channelId", channelID)
+		c.Status(http.StatusForbidden)
+		return
+	}
 
 	slog.Info("webhook notification received",
 		"channelId", channelID,

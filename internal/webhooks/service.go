@@ -78,6 +78,13 @@ func (s *Service) Unsubscribe(ctx context.Context, req *StopWebhookRequest, opts
 	return nil
 }
 
+func (s *Service) HasChannel(channelID string) bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	_, ok := s.channels[channelID]
+	return ok
+}
+
 func (s *Service) ListChannels() []*WebhookChannel {
 	s.mu.RLock()
 	defer s.mu.RUnlock()

@@ -24,7 +24,7 @@ func NewHandler(cfg *config.Config, service *Service) *Handler {
 	return &Handler{
 		service:  service,
 		cfg:      cfg,
-		validate: validator.New(),
+		validate: common.NewValidator(),
 	}
 }
 

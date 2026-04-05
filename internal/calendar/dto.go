@@ -1,7 +1,7 @@
 package calendar
 
 type DateTimeDTO struct {
-	DateTime string `json:"dateTime" validate:"required"`
+	DateTime string `json:"dateTime" validate:"required,rfc3339"`
 	TimeZone string `json:"timeZone,omitempty"`
 }
 

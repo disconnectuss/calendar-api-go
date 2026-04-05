@@ -33,7 +33,14 @@ func (h *Handler) GoogleAuth(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "OAuth2 is not configured"})
 		return
 	}
-	url := h.oauthConfig.AuthCodeURL("state",
+
+	state, err := h.tokenStorage.GenerateOAuthState()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate state"})
+		return
+	}
+
+	url := h.oauthConfig.AuthCodeURL(state,
 		oauth2.AccessTypeOffline,
 		oauth2.SetAuthURLParam("prompt", "consent"),
 	)
@@ -43,6 +50,12 @@ func (h *Handler) GoogleAuth(c *gin.Context) {
 func (h *Handler) GoogleCallback(c *gin.Context) {
 	if h.oauthConfig == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "OAuth2 is not configured"})
+		return
+	}
+
+	state := c.Query("state")
+	if !h.tokenStorage.ValidateOAuthState(state) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid or expired state parameter"})
 		return
 	}
 
