@@ -30,7 +30,6 @@ func AuthMiddleware(cfg *config.Config, tokenStorage *auth.TokenStorage) gin.Han
 			return
 		}
 
-		// OAuth2 mode
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -60,16 +59,12 @@ func AuthMiddleware(cfg *config.Config, tokenStorage *auth.TokenStorage) gin.Han
 			return
 		}
 
-		// Store user in context
 		c.Set(string(UserContextKey), &AuthUser{
 			Type:  "oauth2",
 			Email: userInfo.Email,
 		})
-
-		// Also store access token for Google API calls
 		c.Set("accessToken", accessToken)
 
-		// Try to find stored tokens for refresh capability
 		if stored, _, ok := tokenStorage.GetByAccessToken(accessToken); ok {
 			c.Set("storedTokens", stored)
 		}

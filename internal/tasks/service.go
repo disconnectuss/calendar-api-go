@@ -26,8 +26,6 @@ func (s *Service) getTasksService(ctx context.Context, opts ...option.ClientOpti
 	return gtasks.NewService(ctx, opts...)
 }
 
-// Task Lists
-
 func (s *Service) ListTaskLists(ctx context.Context, maxResults int64, pageToken string, opts ...option.ClientOption) (*common.PaginatedResponse[*gtasks.TaskList], error) {
 	cacheKey := fmt.Sprintf("tasks:lists:%d:%s", maxResults, pageToken)
 	if cached, found := s.cache.Get(cacheKey); found {
@@ -69,8 +67,6 @@ func (s *Service) CreateTaskList(ctx context.Context, req *CreateTaskListRequest
 	s.invalidateCache()
 	return created, nil
 }
-
-// Tasks
 
 func (s *Service) ListTasks(ctx context.Context, taskListID string, maxResults int64, pageToken string, opts ...option.ClientOption) (*common.PaginatedResponse[*gtasks.Task], error) {
 	if taskListID == "" {

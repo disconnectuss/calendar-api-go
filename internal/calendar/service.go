@@ -93,7 +93,6 @@ func (s *Service) CreatePrivateEvent(ctx context.Context, req *CreatePrivateEven
 	event := buildEvent(&req.CreateGeneralEventRequest)
 	event.Visibility = "private"
 
-	// Add allowed users as attendees
 	for _, email := range req.AllowedUsers {
 		event.Attendees = append(event.Attendees, &gcal.EventAttendee{
 			Email: email,
@@ -125,7 +124,6 @@ func (s *Service) UpdateEvent(ctx context.Context, eventID string, req *UpdateEv
 		return nil, common.ForbiddenError("You don't have permission to update this event")
 	}
 
-	// Apply updates
 	if req.Summary != "" {
 		existing.Summary = req.Summary
 	}

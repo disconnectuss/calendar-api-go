@@ -36,7 +36,6 @@ func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 	return option.WithTokenSource(oauth2.StaticTokenSource(token))
 }
 
-// GET /v1/tasks/lists
 func (h *Handler) ListTaskLists(c *gin.Context) {
 	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
 	pageToken := c.Query("pageToken")
@@ -50,7 +49,6 @@ func (h *Handler) ListTaskLists(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// POST /v1/tasks/lists
 func (h *Handler) CreateTaskList(c *gin.Context) {
 	var req CreateTaskListRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -71,7 +69,6 @@ func (h *Handler) CreateTaskList(c *gin.Context) {
 	c.JSON(http.StatusCreated, taskList)
 }
 
-// GET /v1/tasks
 func (h *Handler) ListDefaultTasks(c *gin.Context) {
 	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
 	pageToken := c.Query("pageToken")
@@ -85,7 +82,6 @@ func (h *Handler) ListDefaultTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// POST /v1/tasks
 func (h *Handler) CreateDefaultTask(c *gin.Context) {
 	var req CreateTaskRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -106,7 +102,6 @@ func (h *Handler) CreateDefaultTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, task)
 }
 
-// GET /v1/tasks/lists/:taskListId/tasks
 func (h *Handler) ListTasks(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
@@ -121,7 +116,6 @@ func (h *Handler) ListTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
-// POST /v1/tasks/lists/:taskListId/tasks
 func (h *Handler) CreateTask(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	var req CreateTaskRequest
@@ -143,7 +137,6 @@ func (h *Handler) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, task)
 }
 
-// GET /v1/tasks/lists/:taskListId/tasks/:taskId
 func (h *Handler) GetTask(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	taskID := c.Param("taskId")
@@ -157,7 +150,6 @@ func (h *Handler) GetTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// PATCH /v1/tasks/lists/:taskListId/tasks/:taskId
 func (h *Handler) UpdateTask(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	taskID := c.Param("taskId")
@@ -176,7 +168,6 @@ func (h *Handler) UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// DELETE /v1/tasks/lists/:taskListId/tasks/:taskId
 func (h *Handler) DeleteTask(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	taskID := c.Param("taskId")
@@ -189,7 +180,6 @@ func (h *Handler) DeleteTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Task deleted successfully"})
 }
 
-// POST /v1/tasks/lists/:taskListId/tasks/:taskId/complete
 func (h *Handler) CompleteTask(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	taskID := c.Param("taskId")
@@ -203,7 +193,6 @@ func (h *Handler) CompleteTask(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// POST /v1/tasks/lists/:taskListId/tasks/:taskId/uncomplete
 func (h *Handler) UncompleteTask(c *gin.Context) {
 	taskListID := c.Param("taskListId")
 	taskID := c.Param("taskId")
@@ -218,15 +207,12 @@ func (h *Handler) UncompleteTask(c *gin.Context) {
 }
 
 func (h *Handler) RegisterRoutes(rg *gin.RouterGroup) {
-	// Task lists
 	rg.GET("/tasks/lists", h.ListTaskLists)
 	rg.POST("/tasks/lists", h.CreateTaskList)
 
-	// Default task list tasks
 	rg.GET("/tasks", h.ListDefaultTasks)
 	rg.POST("/tasks", h.CreateDefaultTask)
 
-	// Specific task list tasks
 	rg.GET("/tasks/lists/:taskListId/tasks", h.ListTasks)
 	rg.POST("/tasks/lists/:taskListId/tasks", h.CreateTask)
 	rg.GET("/tasks/lists/:taskListId/tasks/:taskId", h.GetTask)

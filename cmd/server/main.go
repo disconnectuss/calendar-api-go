@@ -29,55 +29,41 @@ func main() {
 
 	r := gin.New()
 
-	// Middleware stack
 	r.Use(middleware.LoggingMiddleware())
 	r.Use(securityHeaders())
 	r.Use(middleware.RateLimitMiddleware())
 	r.Use(middleware.CORSMiddleware(cfg.App.AllowedOrigins))
 
-	// Token storage
 	tokenStorage := auth.NewTokenStorage()
-
-	// Auth middleware
 	authMw := middleware.AuthMiddleware(cfg, tokenStorage)
 
-	// API v1 group
 	v1 := r.Group("/v1")
-
-	// Root endpoint
 	v1.GET("/", rootHandler)
 
-	// Auth routes (no auth middleware)
 	authHandler := auth.NewHandler(cfg, tokenStorage)
 	authHandler.RegisterRoutes(v1)
 
-	// Protected routes
 	protected := v1.Group("")
 	protected.Use(authMw)
 
-	// Calendar routes
 	calendarService := calendar.NewService()
 	calendarHandler := calendar.NewHandler(cfg, calendarService)
 	calendarHandler.RegisterRoutes(protected)
 
-	// Tasks routes
 	tasksService := tasks.NewService()
 	tasksHandler := tasks.NewHandler(cfg, tasksService)
 	tasksHandler.RegisterRoutes(protected)
 
-	// Webhook routes (mixed auth)
 	webhookService := webhooks.NewService()
 	webhookHandler := webhooks.NewHandler(cfg, webhookService)
 	webhookHandler.RegisterRoutes(v1, authMw)
 
-	// Server
 	addr := fmt.Sprintf(":%d", cfg.App.Port)
 	srv := &http.Server{
 		Addr:    addr,
 		Handler: r,
 	}
 
-	// Graceful shutdown
 	go func() {
 		slog.Info("server starting", "port", cfg.App.Port, "env", cfg.App.Env)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

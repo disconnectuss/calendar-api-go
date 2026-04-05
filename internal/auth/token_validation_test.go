@@ -21,7 +21,6 @@ func TestValidateToken_Valid(t *testing.T) {
 	}))
 	defer server.Close()
 
-	// Override endpoint
 	original := userinfoEndpoint
 	userinfoEndpoint = server.URL
 	defer func() { userinfoEndpoint = original }()

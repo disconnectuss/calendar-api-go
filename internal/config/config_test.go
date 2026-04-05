@@ -8,7 +8,6 @@ import (
 )
 
 func TestLoad_Defaults(t *testing.T) {
-	// Clear env to test defaults
 	os.Setenv("GOOGLE_AUTH_TYPE", "service-account")
 	os.Setenv("GOOGLE_SERVICE_ACCOUNT_PATH", "./test-key.json")
 	defer os.Unsetenv("GOOGLE_AUTH_TYPE")

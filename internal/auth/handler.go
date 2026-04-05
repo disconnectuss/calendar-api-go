@@ -28,7 +28,6 @@ func NewHandler(cfg *config.Config, tokenStorage *TokenStorage) *Handler {
 	return h
 }
 
-// GET /v1/auth/google
 func (h *Handler) GoogleAuth(c *gin.Context) {
 	if h.oauthConfig == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "OAuth2 is not configured"})
@@ -41,7 +40,6 @@ func (h *Handler) GoogleAuth(c *gin.Context) {
 	c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
-// GET /v1/auth/google/callback
 func (h *Handler) GoogleCallback(c *gin.Context) {
 	if h.oauthConfig == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "OAuth2 is not configured"})
@@ -60,14 +58,12 @@ func (h *Handler) GoogleCallback(c *gin.Context) {
 		return
 	}
 
-	// Validate token to get user info
 	userInfo, err := ValidateToken(c.Request.Context(), token.AccessToken)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to validate token: " + err.Error()})
 		return
 	}
 
-	// Generate session ID
 	sessionBytes := make([]byte, 32)
 	if _, err := rand.Read(sessionBytes); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate session ID"})
@@ -75,7 +71,6 @@ func (h *Handler) GoogleCallback(c *gin.Context) {
 	}
 	sessionID := hex.EncodeToString(sessionBytes)
 
-	// Store tokens
 	h.tokenStorage.Store(sessionID, &StoredTokens{
 		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,

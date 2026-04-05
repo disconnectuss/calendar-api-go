@@ -36,7 +36,6 @@ func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 	return option.WithTokenSource(oauth2.StaticTokenSource(token))
 }
 
-// POST /v1/webhooks/subscribe
 func (h *Handler) Subscribe(c *gin.Context) {
 	var req CreateWebhookRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -57,7 +56,6 @@ func (h *Handler) Subscribe(c *gin.Context) {
 	c.JSON(http.StatusCreated, channel)
 }
 
-// POST /v1/webhooks/unsubscribe
 func (h *Handler) Unsubscribe(c *gin.Context) {
 	var req StopWebhookRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -77,7 +75,6 @@ func (h *Handler) Unsubscribe(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Webhook unsubscribed successfully"})
 }
 
-// POST /v1/webhooks/notifications (no auth)
 func (h *Handler) Notifications(c *gin.Context) {
 	channelID := c.GetHeader("X-Goog-Channel-Id")
 	resourceState := c.GetHeader("X-Goog-Resource-State")
@@ -101,7 +98,6 @@ func (h *Handler) Notifications(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// GET /v1/webhooks/channels
 func (h *Handler) ListChannels(c *gin.Context) {
 	channels := h.service.ListChannels()
 	c.JSON(http.StatusOK, gin.H{"channels": channels})
@@ -110,10 +106,8 @@ func (h *Handler) ListChannels(c *gin.Context) {
 func (h *Handler) RegisterRoutes(rg *gin.RouterGroup, authMiddleware gin.HandlerFunc) {
 	webhooks := rg.Group("/webhooks")
 
-	// No auth for notifications
 	webhooks.POST("/notifications", h.Notifications)
 
-	// Auth required
 	protected := webhooks.Group("")
 	protected.Use(authMiddleware)
 	protected.POST("/subscribe", h.Subscribe)
