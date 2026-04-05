@@ -199,11 +199,11 @@ func buildEvent(req *CreateGeneralEventRequest) *gcal.Event {
 			DateTime: req.End.DateTime,
 			TimeZone: req.End.TimeZone,
 		},
-		AnyoneCanAddSelf:      req.AnyoneCanAddSelf,
-		GuestsCanInviteOthers: &req.GuestsCanInviteOthers,
-		GuestsCanModify:       req.GuestsCanModify,
+		AnyoneCanAddSelf:        req.AnyoneCanAddSelf,
+		GuestsCanInviteOthers:   &req.GuestsCanInviteOthers,
+		GuestsCanModify:         req.GuestsCanModify,
 		GuestsCanSeeOtherGuests: &req.GuestsCanSeeOthers,
-		Attendees:             buildAttendees(req.Attendees),
+		Attendees:               buildAttendees(req.Attendees),
 	}
 	return event
 }

@@ -8,8 +8,8 @@ import (
 	"api-go/internal/common"
 
 	"github.com/patrickmn/go-cache"
-	gtasks "google.golang.org/api/tasks/v1"
 	"google.golang.org/api/option"
+	gtasks "google.golang.org/api/tasks/v1"
 )
 
 type Service struct {

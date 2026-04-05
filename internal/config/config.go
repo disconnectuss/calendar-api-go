@@ -19,10 +19,10 @@ type AppConfig struct {
 }
 
 type GoogleConfig struct {
-	AuthType           string   `mapstructure:"GOOGLE_AUTH_TYPE"`
-	ClientID           string   `mapstructure:"GOOGLE_CLIENT_ID"`
-	ClientSecret       string   `mapstructure:"GOOGLE_CLIENT_SECRET"`
-	RedirectURI        string   `mapstructure:"GOOGLE_REDIRECT_URI"`
+	AuthType           string `mapstructure:"GOOGLE_AUTH_TYPE"`
+	ClientID           string `mapstructure:"GOOGLE_CLIENT_ID"`
+	ClientSecret       string `mapstructure:"GOOGLE_CLIENT_SECRET"`
+	RedirectURI        string `mapstructure:"GOOGLE_REDIRECT_URI"`
 	Scopes             []string
 	ServiceAccountPath string `mapstructure:"GOOGLE_SERVICE_ACCOUNT_PATH"`
 }

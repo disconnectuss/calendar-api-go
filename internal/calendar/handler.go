@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"api-go/internal/auth"
 	"api-go/internal/common"
 	"api-go/internal/config"
 	"api-go/internal/middleware"
@@ -30,7 +31,7 @@ func NewHandler(cfg *config.Config, service *Service) *Handler {
 
 func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 	if h.cfg.Google.AuthType == "service-account" {
-		opt, err := newServiceAccountOption(h.cfg)
+		opt, err := auth.NewServiceAccountOption(h.cfg.Google.ServiceAccountPath, h.cfg.Google.Scopes)
 		if err != nil {
 			return nil
 		}
@@ -38,12 +39,7 @@ func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 	}
 	accessToken, _ := c.Get("accessToken")
 	token := &oauth2.Token{AccessToken: accessToken.(string)}
-	src := oauth2.StaticTokenSource(token)
-	return option.WithTokenSource(src)
-}
-
-func newServiceAccountOption(cfg *config.Config) (option.ClientOption, error) {
-	return option.WithCredentialsFile(cfg.Google.ServiceAccountPath), nil
+	return option.WithTokenSource(oauth2.StaticTokenSource(token))
 }
 
 func (h *Handler) ListEvents(c *gin.Context) {

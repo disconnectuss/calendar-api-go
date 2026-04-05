@@ -18,10 +18,10 @@ type StoredTokens struct {
 }
 
 type TokenStorage struct {
-	mu              sync.RWMutex
-	tokens          map[string]*StoredTokens
-	accessTokenIdx  map[string]string // accessToken -> sessionID
-	oauthStates     map[string]time.Time
+	mu             sync.RWMutex
+	tokens         map[string]*StoredTokens
+	accessTokenIdx map[string]string // accessToken -> sessionID
+	oauthStates    map[string]time.Time
 }
 
 func NewTokenStorage() *TokenStorage {

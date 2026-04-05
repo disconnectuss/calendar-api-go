@@ -10,7 +10,7 @@ type Validator = validator.Validate
 
 func NewValidator() *Validator {
 	v := validator.New()
-	v.RegisterValidation("rfc3339", validateRFC3339)
+	_ = v.RegisterValidation("rfc3339", validateRFC3339)
 	return v
 }
 

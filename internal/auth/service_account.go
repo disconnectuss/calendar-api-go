@@ -16,7 +16,7 @@ func NewServiceAccountTokenSource(ctx context.Context, keyPath string, scopes []
 		return nil, fmt.Errorf("failed to read service account key: %w", err)
 	}
 
-	creds, err := google.CredentialsFromJSON(ctx, data, scopes...)
+	creds, err := google.CredentialsFromJSON(ctx, data, scopes...) //nolint:staticcheck // TODO: migrate to cloud.google.com/go/auth
 	if err != nil {
 		return nil, fmt.Errorf("failed to create credentials: %w", err)
 	}
@@ -30,7 +30,7 @@ func NewServiceAccountOption(keyPath string, scopes []string) (option.ClientOpti
 		return nil, fmt.Errorf("failed to read service account key: %w", err)
 	}
 
-	creds, err := google.CredentialsFromJSON(context.Background(), data, scopes...)
+	creds, err := google.CredentialsFromJSON(context.Background(), data, scopes...) //nolint:staticcheck // TODO: migrate to cloud.google.com/go/auth
 	if err != nil {
 		return nil, fmt.Errorf("failed to create credentials: %w", err)
 	}

@@ -40,7 +40,7 @@ func AuthMiddleware(cfg *config.Config, tokenStorage *auth.TokenStorage) gin.Han
 		}
 
 		parts := strings.SplitN(authHeader, " ", 2)
-		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+		if len(parts) != 2 || !strings.EqualFold(parts[0], "bearer") {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"statusCode": http.StatusUnauthorized,
 				"message":    "Invalid authorization header format",
