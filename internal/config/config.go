@@ -41,7 +41,7 @@ func Load() *Config {
 	viper.SetDefault("RATE_LIMIT_REQUESTS", 100)
 	viper.SetDefault("RATE_LIMIT_WINDOW", "15m")
 
-	_ = viper.ReadInConfig() 
+	_ = viper.ReadInConfig()
 
 	cfg := &Config{}
 
