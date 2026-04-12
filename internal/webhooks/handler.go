@@ -93,7 +93,6 @@ func (h *Handler) Notifications(c *gin.Context) {
 		return
 	}
 
-	// Reject notifications for channels we didn't create
 	if !h.service.HasChannel(channelID) {
 		slog.Warn("webhook notification from unknown channel", "channelId", channelID)
 		c.Status(http.StatusForbidden)

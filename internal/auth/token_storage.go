@@ -83,7 +83,6 @@ func (ts *TokenStorage) GetByAccessToken(accessToken string) (*StoredTokens, str
 	return t, sessionID, true
 }
 
-// GenerateOAuthState creates a cryptographically random state for CSRF protection.
 func (ts *TokenStorage) GenerateOAuthState() (string, error) {
 	b := make([]byte, 32)
 	if _, err := rand.Read(b); err != nil {
@@ -98,7 +97,6 @@ func (ts *TokenStorage) GenerateOAuthState() (string, error) {
 	return state, nil
 }
 
-// ValidateOAuthState checks and consumes a state parameter (single use).
 func (ts *TokenStorage) ValidateOAuthState(state string) bool {
 	ts.mu.Lock()
 	defer ts.mu.Unlock()

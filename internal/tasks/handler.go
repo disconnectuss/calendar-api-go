@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"net/http"
-	"strconv"
 
 	"api-go/internal/auth"
 	"api-go/internal/common"
@@ -46,7 +45,7 @@ func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 }
 
 func (h *Handler) ListTaskLists(c *gin.Context) {
-	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
+	maxResults := common.ParseMaxResults(c.Query("maxResults"))
 	pageToken := c.Query("pageToken")
 	opt := h.getClientOption(c)
 
@@ -79,7 +78,7 @@ func (h *Handler) CreateTaskList(c *gin.Context) {
 }
 
 func (h *Handler) ListDefaultTasks(c *gin.Context) {
-	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
+	maxResults := common.ParseMaxResults(c.Query("maxResults"))
 	pageToken := c.Query("pageToken")
 	opt := h.getClientOption(c)
 
@@ -113,7 +112,7 @@ func (h *Handler) CreateDefaultTask(c *gin.Context) {
 
 func (h *Handler) ListTasks(c *gin.Context) {
 	taskListID := c.Param("taskListId")
-	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
+	maxResults := common.ParseMaxResults(c.Query("maxResults"))
 	pageToken := c.Query("pageToken")
 	opt := h.getClientOption(c)
 

@@ -60,8 +60,8 @@ func (rl *rateLimiter) allow(ip string) bool {
 	return v.count <= rl.limit
 }
 
-func RateLimitMiddleware() gin.HandlerFunc {
-	rl := newRateLimiter(100, 15*time.Minute)
+func RateLimitMiddleware(limit int, window time.Duration) gin.HandlerFunc {
+	rl := newRateLimiter(limit, window)
 
 	return func(c *gin.Context) {
 		if !rl.allow(c.ClientIP()) {

@@ -2,7 +2,6 @@ package calendar
 
 import (
 	"net/http"
-	"strconv"
 
 	"api-go/internal/auth"
 	"api-go/internal/common"
@@ -47,7 +46,7 @@ func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 }
 
 func (h *Handler) ListEvents(c *gin.Context) {
-	maxResults, _ := strconv.ParseInt(c.DefaultQuery("maxResults", "20"), 10, 64)
+	maxResults := common.ParseMaxResults(c.Query("maxResults"))
 	pageToken := c.Query("pageToken")
 
 	opt := h.getClientOption(c)

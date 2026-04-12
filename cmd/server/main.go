@@ -31,7 +31,7 @@ func main() {
 
 	r.Use(middleware.LoggingMiddleware())
 	r.Use(securityHeaders())
-	r.Use(middleware.RateLimitMiddleware())
+	r.Use(middleware.RateLimitMiddleware(cfg.App.RateLimitRequests, cfg.App.RateLimitWindow))
 	r.Use(middleware.CORSMiddleware(cfg.App.AllowedOrigins))
 
 	tokenStorage := auth.NewTokenStorage()

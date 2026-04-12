@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -13,9 +14,11 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Port           int      `mapstructure:"PORT"`
-	Env            string   `mapstructure:"NODE_ENV"`
-	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
+	Port              int
+	Env               string
+	AllowedOrigins    []string
+	RateLimitRequests int
+	RateLimitWindow   time.Duration
 }
 
 type GoogleConfig struct {
@@ -35,8 +38,10 @@ func Load() *Config {
 	viper.SetDefault("NODE_ENV", "development")
 	viper.SetDefault("GOOGLE_AUTH_TYPE", "service-account")
 	viper.SetDefault("GOOGLE_SERVICE_ACCOUNT_PATH", "./config/service-account-key.json")
+	viper.SetDefault("RATE_LIMIT_REQUESTS", 100)
+	viper.SetDefault("RATE_LIMIT_WINDOW", "15m")
 
-	_ = viper.ReadInConfig() // .env dosyası yoksa sorun değil
+	_ = viper.ReadInConfig() 
 
 	cfg := &Config{}
 
@@ -52,6 +57,16 @@ func Load() *Config {
 	if !validEnvs[cfg.App.Env] {
 		panic(fmt.Sprintf("invalid NODE_ENV: %s (must be development, production, or test)", cfg.App.Env))
 	}
+
+	cfg.App.RateLimitRequests = viper.GetInt("RATE_LIMIT_REQUESTS")
+	if cfg.App.RateLimitRequests <= 0 {
+		panic(fmt.Sprintf("invalid RATE_LIMIT_REQUESTS: %d (must be > 0)", cfg.App.RateLimitRequests))
+	}
+	window, err := time.ParseDuration(viper.GetString("RATE_LIMIT_WINDOW"))
+	if err != nil || window <= 0 {
+		panic(fmt.Sprintf("invalid RATE_LIMIT_WINDOW: %q (must be a positive duration like 15m)", viper.GetString("RATE_LIMIT_WINDOW")))
+	}
+	cfg.App.RateLimitWindow = window
 
 	cfg.Google.AuthType = viper.GetString("GOOGLE_AUTH_TYPE")
 	cfg.Google.ClientID = viper.GetString("GOOGLE_CLIENT_ID")

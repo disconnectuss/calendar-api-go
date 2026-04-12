@@ -119,7 +119,6 @@ func (s *Service) UpdateEvent(ctx context.Context, eventID string, req *UpdateEv
 		return nil, err
 	}
 
-	// Authorization: user must be organizer or attendee
 	if !isOrganizerOrAttendee(existing, userEmail) {
 		return nil, common.ForbiddenError("You don't have permission to update this event")
 	}
@@ -169,7 +168,6 @@ func (s *Service) DeleteEvent(ctx context.Context, eventID string, userEmail str
 		return err
 	}
 
-	// Authorization: only organizer can delete
 	if !isOrganizer(existing, userEmail) {
 		return common.ForbiddenError("Only the organizer can delete this event")
 	}
