@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type UserInfo struct {
@@ -17,6 +18,8 @@ type UserInfo struct {
 
 var userinfoEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
 
+var httpClient = &http.Client{Timeout: 10 * time.Second}
+
 func ValidateToken(ctx context.Context, accessToken string) (*UserInfo, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, userinfoEndpoint, nil)
 	if err != nil {
@@ -24,7 +27,7 @@ func ValidateToken(ctx context.Context, accessToken string) (*UserInfo, error) {
 	}
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to validate token: %w", err)
 	}

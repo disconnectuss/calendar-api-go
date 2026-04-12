@@ -35,8 +35,12 @@ func (h *Handler) getClientOption(c *gin.Context) option.ClientOption {
 		}
 		return opt
 	}
-	accessToken, _ := c.Get("accessToken")
-	token := &oauth2.Token{AccessToken: accessToken.(string)}
+	raw, _ := c.Get("accessToken")
+	accessToken, ok := raw.(string)
+	if !ok || accessToken == "" {
+		return nil
+	}
+	token := &oauth2.Token{AccessToken: accessToken}
 	return option.WithTokenSource(oauth2.StaticTokenSource(token))
 }
 
